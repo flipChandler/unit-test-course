@@ -10,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+// @EqualsAndHashCode(exclude = {"name", "email", "password"} )
 public class User {
 
     @Id

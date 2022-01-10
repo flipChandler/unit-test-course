@@ -6,18 +6,19 @@ import br.com.dicasdeumdev.userapi.repositories.UserRepository;
 import br.com.dicasdeumdev.userapi.services.UserService;
 import br.com.dicasdeumdev.userapi.services.exceptions.DataIntegrityViolationException;
 import br.com.dicasdeumdev.userapi.services.exceptions.ObjectNotFoundException;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private ModelMapper mapper;
 
     @Override
@@ -51,8 +52,7 @@ public class UserServiceImpl implements UserService {
 
     private void findByEmail(UserDTO userDTO) {
         Optional<User> optional = userRepository.findByEmail(userDTO.getEmail());
-        Integer userId = optional.get().getId();
-        if (optional.isPresent() && !userId.equals(userDTO.getId())) {
+        if (optional.isPresent() && !optional.get().getId().equals(userDTO.getId())) {
             throw new DataIntegrityViolationException("Email já cadastrado no sistema!");
         }
     }
