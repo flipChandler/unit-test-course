@@ -4,6 +4,7 @@ import br.com.dicasdeumdev.userapi.domains.User;
 import br.com.dicasdeumdev.userapi.domains.dtos.UserDTO;
 import br.com.dicasdeumdev.userapi.repositories.UserRepository;
 import br.com.dicasdeumdev.userapi.services.UserService;
+import br.com.dicasdeumdev.userapi.services.exceptions.DataIntegrityViolationException;
 import br.com.dicasdeumdev.userapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,7 +32,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(UserDTO dto) {
-        return userRepository.save(mapper.map(dto, User.class));
+    public User create(UserDTO userDTO) {
+        findByEmail(userDTO);
+        return userRepository.save(mapper.map(userDTO, User.class));
+    }
+
+    private void findByEmail(UserDTO userDTO) {
+        Optional<User> optional = userRepository.findByEmail(userDTO.getEmail());
+        if (optional.isPresent()) {
+            throw new DataIntegrityViolationException("Email já cadastrado no sistema!");
+        }
     }
 }
