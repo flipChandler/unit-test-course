@@ -1,5 +1,6 @@
 package br.com.dicasdeumdev.userapi.resources.exceptions;
 
+import br.com.dicasdeumdev.userapi.services.exceptions.DataIntegrityViolationException;
 import br.com.dicasdeumdev.userapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,17 @@ class ResourceExceptionHandlerTest {
     }
 
     @Test
-    void dataIntegrityViolation() {
+    void whenDataIntegrityViolationException_thenReturnAResponseEntity() {
+        ResponseEntity<StandardError> response = exceptionHandler.dataIntegrityViolation(
+                new DataIntegrityViolationException("Objeto já cadastrado no sistema!"),
+                new MockHttpServletRequest());
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals("Objeto já cadastrado no sistema!", response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
     }
 }
