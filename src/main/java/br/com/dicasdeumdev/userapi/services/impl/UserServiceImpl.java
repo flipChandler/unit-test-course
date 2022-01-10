@@ -7,6 +7,7 @@ import br.com.dicasdeumdev.userapi.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -19,5 +20,10 @@ public class UserServiceImpl implements UserService {
     public User findById(Integer id) {
         Optional<User> optional = userRepository.findById(id);
         return optional.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado!"));
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
