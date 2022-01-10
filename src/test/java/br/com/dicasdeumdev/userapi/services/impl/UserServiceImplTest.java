@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceImplTest {
@@ -147,7 +147,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void whenDelete_thenVerifyItsNumberOfInvocations() {
+        when(userRepository.findById(anyInt())).thenReturn(optionalUser);
+        doNothing().when(userRepository).deleteById(anyInt());
+
+        userService.delete(ID);
+
+        verify(userRepository, times(1)).deleteById(anyInt());      // quantas vezes foi invocado o deleteById em userRepository
     }
 
     private void startUser() {
