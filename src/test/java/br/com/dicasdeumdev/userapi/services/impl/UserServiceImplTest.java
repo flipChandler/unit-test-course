@@ -65,14 +65,14 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindById_thenReturnAnObjectNotFoundException() {
+    void whenFindById_thenThrowAnObjectNotFoundException() {
         when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
 
         try {
             userService.findById(ID);
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
+            assertEquals("Objeto não encontrado!", ex.getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenCreate_thenReturnADataIntegrityViolationException() {
+    void whenCreate_thenThrowADataIntegrityViolationException() {
         when(userRepository.findByEmail(anyString())).thenReturn(optionalUser);
 
         try {
@@ -134,7 +134,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenUpdate_thenReturnADataIntegrityViolationException() {
+    void whenUpdate_thenThrowADataIntegrityViolationException() {
         when(userRepository.findByEmail(anyString())).thenReturn(optionalUser);
 
         try{
@@ -154,6 +154,18 @@ class UserServiceImplTest {
         userService.delete(ID);
 
         verify(userRepository, times(1)).deleteById(anyInt());      // quantas vezes foi invocado o deleteById em userRepository
+    }
+
+    @Test
+    void whenDelete_thenThrowAnObjectNotFoundException() {
+        when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+
+        try {
+            userService.delete(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Objeto não encontrado!", ex.getMessage());
+        }
     }
 
     private void startUser() {
